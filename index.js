@@ -3,14 +3,13 @@
 const express = require("express");
 const session = require("express-session");
 const xero_node = require("xero-node");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const to_names_only = (acc, { name }) => {
   return acc + `<li>${name}</li>`;
 };
-
-// How shall I handle secret keys?
-const CLIENT_ID = "040C0252E5A14F27A635BD5860B070FB";
-const CLIENT_SECRET = "5UeJnayOig7i2R6O4oC2_thAL-ZBd7r2jXV0dtsxHDOZjcpM";
 
 const redirectUri = ["http://localhost:5000/callback"];
 const scopes = [
@@ -24,8 +23,8 @@ const scopes = [
 ];
 
 const xero = new xero_node.XeroClient({
-  clientId: CLIENT_ID,
-  clientSecret: CLIENT_SECRET,
+  clientId: process.env.CLIENT_ID,
+  clientSecret: process.env.CLIENT_SECRET,
   redirectUris: redirectUri,
   scopes
 });

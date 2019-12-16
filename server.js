@@ -4,12 +4,9 @@ const express = require("express");
 const session = require("express-session");
 const xero_node = require("xero-node");
 const dotenv = require("dotenv");
+const fs = require("fs");
 
 dotenv.config();
-
-const to_names_only = (acc, { name }) => {
-  return acc + `<li>${name}</li>`;
-};
 
 const redirectUri = ["http://localhost:5000/callback"];
 const scopes = [
@@ -59,7 +56,6 @@ app.get("/callback", async function(req, res) {
   const url = "http://localhost:5000/" + req.originalUrl;
   await xero.setAccessTokenFromRedirectUri(url);
 
-  // Optional: read user info from the id token
   let tokenClaims = await xero.readIdTokenClaims();
   const accessToken = await xero.readTokenSet();
 
@@ -69,6 +65,11 @@ app.get("/callback", async function(req, res) {
   res.redirect("/organisation");
 });
 
+function write_to_file(path, content) {
+  fs.mkdirSync("tmp", { recursive: true });
+  fs.writeFileSync(path, content, { encoding: "utf8" });
+}
+
 app.get("/organisation", async function(req, res) {
   try {
     let body = "";
@@ -77,16 +78,14 @@ app.get("/organisation", async function(req, res) {
     // Accounts
     response = await xero.accountingApi.getAccounts(xero.tenantIds[0]);
     let { accounts } = response.body;
-    accounts = accounts.reduce(to_names_only, "");
-    body += `<h1>Accounts</h1> <ul>${accounts}</ul>`;
+    write_to_file("tmp/accounts.json", JSON.stringify(accounts));
 
     // Contacts
     response = await xero.accountingApi.getContacts(xero.tenantIds[0]);
     let { contacts } = response.body;
-    contacts = contacts.reduce(to_names_only, "");
-    body += `<h1>Contacts</h1> <ul>${contacts}</ul>`;
+    write_to_file("tmp/contacts.json", JSON.stringify(contacts));
 
-    res.send(body);
+    res.send("Files saved to disk");
   } catch (err) {
     res.send(`Sorry, something went wrong: ${err}`);
   }

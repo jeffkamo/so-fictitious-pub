@@ -1,9 +1,20 @@
 const app = require("../app.js");
 const chai = require("chai");
 const chaiHttp = require("chai-http");
+const proxyquire = require("proxyquire");
 
 chai.use(chaiHttp);
 const expect = chai.expect;
+
+class XeroStub {
+  constructor() {
+    this.tenantIds = ["1a2b3c4d"];
+    this.accountingApi = {
+      getAccounts: () => ({ body: { accounts: {} } }),
+      getContacts: () => ({ body: { contacts: {} } })
+    };
+  }
+}
 
 describe("The homepage", function() {
   this.timeout(5000);
@@ -74,7 +85,21 @@ describe("The organization route", () => {
   });
 
   it("should render a page when authenticated via Xero", done => {
-    done(); // @TODO: implement this
+    const appWithMock = proxyquire("../app.js", {
+      "xero-node": { XeroClient: XeroStub }
+    });
+
+    chai
+      .request(appWithMock)
+      .get("/organization")
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.html;
+      })
+      .catch(err => {
+        throw err;
+      })
+      .then(() => done());
   });
 
   it("should write files for accounts and contacts", done => {

@@ -1,5 +1,5 @@
 {
-  "name": "xero",
+  "name": "so-fictitious-pub",
   "version": "1.0.0",
   "description": "",
   "engine": {
@@ -10,7 +10,7 @@
     "start": "node server.js",
     "test": "npx mocha"
   },
-  "author": "",
+  "author": "Jeff Kamo",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",

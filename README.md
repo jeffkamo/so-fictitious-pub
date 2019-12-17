@@ -1,12 +1,14 @@
-# Xero "So Fictitious Pub" Project
-
 [Assignment details](https://docs.google.com/document/d/16hj_zqOK9DcH1zOXeDfVg_bQxdxDN178E_bM5zjUnxA/edit)
 
 # Getting started
 
 ## Pre-Requisites
 
-Node `>=10.13` is required due to some of the project's dependencies. Additionally, you will need a Xero app along with its Client ID and Client Secret. You must include the id and secret to a `.env` file in this project's root directory. For example, a `.env` might look like this:
+Node `>=10.13` is required due to some of the project's dependencies.
+
+Additionally, you will need a Xero app (who's redirect URI is `http://localhost:5000/callback`). If you do not have a Xero app, create one [here](https://developer.xero.com/myapps).
+
+From your Xero app copy and past its Client ID and Client Secret into a `.env` file in this project's root directory. For example, the `.env` might look like this:
 
 ```
 CLIENT_ID=1234asdf5678qwer
@@ -37,7 +39,7 @@ npm test
 
 # Backend and Data
 
-This application uses [Xero](https://www.xero.com/ca/) as the backend. This application makes a request to get a list of "accounts" and "contacts" (or "Accounts" and "Vendors" as described in the assignment doc above). This data is then stored locally in json files in the `/tmp` directory. Two such files are created:
+This application uses [Xero](https://developer.xero.com/) as the backend. This application makes a request to get a list of "accounts" and "contacts" (or "Accounts" and "Vendors" as described in the assignment doc above). This data is then stored locally in json files in the `/tmp` directory. Two such files are created:
 
 - `/tmp/accounts.json`
 - `/tmp/contacts.json`
